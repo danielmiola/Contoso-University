@@ -148,6 +148,14 @@
     <Compile Include="Migrations\201510221341559_DepartmentSP.Designer.cs">
       <DependentUpon>201510221341559_DepartmentSP.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201510221519531_RowVersion.cs" />
+    <Compile Include="Migrations\201510221519531_RowVersion.Designer.cs">
+      <DependentUpon>201510221519531_RowVersion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201510221520292_RowVersion2.cs" />
+    <Compile Include="Migrations\201510221520292_RowVersion2.Designer.cs">
+      <DependentUpon>201510221520292_RowVersion2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Course.cs" />
     <Compile Include="Models\Department.cs" />
@@ -227,6 +235,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201510221341559_DepartmentSP.resx">
       <DependentUpon>201510221341559_DepartmentSP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201510221519531_RowVersion.resx">
+      <DependentUpon>201510221519531_RowVersion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201510221520292_RowVersion2.resx">
+      <DependentUpon>201510221520292_RowVersion2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
