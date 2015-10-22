@@ -3,7 +3,7 @@ namespace ContosoUniversity.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class ComplexDataModel : DbMigration
+    public partial class Inheritance : DbMigration
     {
         public override void Up()
         {
@@ -29,19 +29,22 @@ namespace ContosoUniversity.Migrations
                         Budget = c.Decimal(nullable: false, storeType: "money"),
                         StartDate = c.DateTime(nullable: false),
                         InstructorID = c.Int(),
+                        RowVersion = c.Binary(nullable: false, fixedLength: true, timestamp: true, storeType: "rowversion"),
                     })
                 .PrimaryKey(t => t.DepartmentID)
-                .ForeignKey("dbo.Instructor", t => t.InstructorID)
+                .ForeignKey("dbo.Person", t => t.InstructorID)
                 .Index(t => t.InstructorID);
             
             CreateTable(
-                "dbo.Instructor",
+                "dbo.Person",
                 c => new
                     {
                         ID = c.Int(nullable: false, identity: true),
                         LastName = c.String(nullable: false, maxLength: 50),
                         FirstMidName = c.String(nullable: false, maxLength: 50),
-                        HireDate = c.DateTime(nullable: false),
+                        HireDate = c.DateTime(),
+                        EnrollmentDate = c.DateTime(),
+                        Discriminator = c.String(nullable: false, maxLength: 128),
                     })
                 .PrimaryKey(t => t.ID);
             
@@ -53,7 +56,7 @@ namespace ContosoUniversity.Migrations
                         Location = c.String(maxLength: 50),
                     })
                 .PrimaryKey(t => t.InstructorID)
-                .ForeignKey("dbo.Instructor", t => t.InstructorID)
+                .ForeignKey("dbo.Person", t => t.InstructorID)
                 .Index(t => t.InstructorID);
             
             CreateTable(
@@ -67,20 +70,9 @@ namespace ContosoUniversity.Migrations
                     })
                 .PrimaryKey(t => t.EnrollmentID)
                 .ForeignKey("dbo.Course", t => t.CourseID, cascadeDelete: true)
-                .ForeignKey("dbo.Student", t => t.StudentID, cascadeDelete: true)
+                .ForeignKey("dbo.Person", t => t.StudentID, cascadeDelete: true)
                 .Index(t => t.CourseID)
                 .Index(t => t.StudentID);
-            
-            CreateTable(
-                "dbo.Student",
-                c => new
-                    {
-                        ID = c.Int(nullable: false, identity: true),
-                        LastName = c.String(nullable: false, maxLength: 50),
-                        FirstMidName = c.String(nullable: false, maxLength: 50),
-                        EnrollmentDate = c.DateTime(nullable: false),
-                    })
-                .PrimaryKey(t => t.ID);
             
             CreateTable(
                 "dbo.CourseInstructor",
@@ -91,21 +83,80 @@ namespace ContosoUniversity.Migrations
                     })
                 .PrimaryKey(t => new { t.CourseID, t.InstructorID })
                 .ForeignKey("dbo.Course", t => t.CourseID, cascadeDelete: true)
-                .ForeignKey("dbo.Instructor", t => t.InstructorID, cascadeDelete: true)
+                .ForeignKey("dbo.Person", t => t.InstructorID, cascadeDelete: true)
                 .Index(t => t.CourseID)
                 .Index(t => t.InstructorID);
+            
+            CreateStoredProcedure(
+                "dbo.Department_Insert",
+                p => new
+                    {
+                        Name = p.String(maxLength: 50),
+                        Budget = p.Decimal(precision: 19, scale: 4, storeType: "money"),
+                        StartDate = p.DateTime(),
+                        InstructorID = p.Int(),
+                    },
+                body:
+                    @"INSERT [dbo].[Department]([Name], [Budget], [StartDate], [InstructorID])
+                      VALUES (@Name, @Budget, @StartDate, @InstructorID)
+                      
+                      DECLARE @DepartmentID int
+                      SELECT @DepartmentID = [DepartmentID]
+                      FROM [dbo].[Department]
+                      WHERE @@ROWCOUNT > 0 AND [DepartmentID] = scope_identity()
+                      
+                      SELECT t0.[DepartmentID], t0.[RowVersion]
+                      FROM [dbo].[Department] AS t0
+                      WHERE @@ROWCOUNT > 0 AND t0.[DepartmentID] = @DepartmentID"
+            );
+            
+            CreateStoredProcedure(
+                "dbo.Department_Update",
+                p => new
+                    {
+                        DepartmentID = p.Int(),
+                        Name = p.String(maxLength: 50),
+                        Budget = p.Decimal(precision: 19, scale: 4, storeType: "money"),
+                        StartDate = p.DateTime(),
+                        InstructorID = p.Int(),
+                        RowVersion_Original = p.Binary(maxLength: 8, fixedLength: true, storeType: "rowversion"),
+                    },
+                body:
+                    @"UPDATE [dbo].[Department]
+                      SET [Name] = @Name, [Budget] = @Budget, [StartDate] = @StartDate, [InstructorID] = @InstructorID
+                      WHERE (([DepartmentID] = @DepartmentID) AND (([RowVersion] = @RowVersion_Original) OR ([RowVersion] IS NULL AND @RowVersion_Original IS NULL)))
+                      
+                      SELECT t0.[RowVersion]
+                      FROM [dbo].[Department] AS t0
+                      WHERE @@ROWCOUNT > 0 AND t0.[DepartmentID] = @DepartmentID"
+            );
+            
+            CreateStoredProcedure(
+                "dbo.Department_Delete",
+                p => new
+                    {
+                        DepartmentID = p.Int(),
+                        RowVersion_Original = p.Binary(maxLength: 8, fixedLength: true, storeType: "rowversion"),
+                    },
+                body:
+                    @"DELETE [dbo].[Department]
+                      WHERE (([DepartmentID] = @DepartmentID) AND (([RowVersion] = @RowVersion_Original) OR ([RowVersion] IS NULL AND @RowVersion_Original IS NULL)))"
+            );
             
         }
         
         public override void Down()
         {
-            DropForeignKey("dbo.CourseInstructor", "InstructorID", "dbo.Instructor");
+            DropStoredProcedure("dbo.Department_Delete");
+            DropStoredProcedure("dbo.Department_Update");
+            DropStoredProcedure("dbo.Department_Insert");
+            DropForeignKey("dbo.CourseInstructor", "InstructorID", "dbo.Person");
             DropForeignKey("dbo.CourseInstructor", "CourseID", "dbo.Course");
-            DropForeignKey("dbo.Enrollment", "StudentID", "dbo.Student");
+            DropForeignKey("dbo.Enrollment", "StudentID", "dbo.Person");
             DropForeignKey("dbo.Enrollment", "CourseID", "dbo.Course");
             DropForeignKey("dbo.Course", "DepartmentID", "dbo.Department");
-            DropForeignKey("dbo.Department", "InstructorID", "dbo.Instructor");
-            DropForeignKey("dbo.OfficeAssignment", "InstructorID", "dbo.Instructor");
+            DropForeignKey("dbo.Department", "InstructorID", "dbo.Person");
+            DropForeignKey("dbo.OfficeAssignment", "InstructorID", "dbo.Person");
             DropIndex("dbo.CourseInstructor", new[] { "InstructorID" });
             DropIndex("dbo.CourseInstructor", new[] { "CourseID" });
             DropIndex("dbo.Enrollment", new[] { "StudentID" });
@@ -114,10 +165,9 @@ namespace ContosoUniversity.Migrations
             DropIndex("dbo.Department", new[] { "InstructorID" });
             DropIndex("dbo.Course", new[] { "DepartmentID" });
             DropTable("dbo.CourseInstructor");
-            DropTable("dbo.Student");
             DropTable("dbo.Enrollment");
             DropTable("dbo.OfficeAssignment");
-            DropTable("dbo.Instructor");
+            DropTable("dbo.Person");
             DropTable("dbo.Department");
             DropTable("dbo.Course");
         }

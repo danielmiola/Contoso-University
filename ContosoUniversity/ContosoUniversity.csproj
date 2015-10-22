@@ -140,21 +140,9 @@
     </Compile>
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\Logger.cs" />
-    <Compile Include="Migrations\201510221105162_ComplexDataModel].cs" />
-    <Compile Include="Migrations\201510221105162_ComplexDataModel].Designer.cs">
-      <DependentUpon>201510221105162_ComplexDataModel].cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201510221341559_DepartmentSP.cs" />
-    <Compile Include="Migrations\201510221341559_DepartmentSP.Designer.cs">
-      <DependentUpon>201510221341559_DepartmentSP.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201510221519531_RowVersion.cs" />
-    <Compile Include="Migrations\201510221519531_RowVersion.Designer.cs">
-      <DependentUpon>201510221519531_RowVersion.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201510221520292_RowVersion2.cs" />
-    <Compile Include="Migrations\201510221520292_RowVersion2.Designer.cs">
-      <DependentUpon>201510221520292_RowVersion2.cs</DependentUpon>
+    <Compile Include="Migrations\201510221624228_Inheritance.cs" />
+    <Compile Include="Migrations\201510221624228_Inheritance.Designer.cs">
+      <DependentUpon>201510221624228_Inheritance.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Course.cs" />
@@ -162,6 +150,7 @@
     <Compile Include="Models\Enrollment.cs" />
     <Compile Include="Models\Instructor.cs" />
     <Compile Include="Models\OfficeAssignment.cs" />
+    <Compile Include="Models\Person.cs" />
     <Compile Include="Models\Student.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\AssignedCourseData.cs" />
@@ -230,17 +219,8 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201510221105162_ComplexDataModel].resx">
-      <DependentUpon>201510221105162_ComplexDataModel].cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201510221341559_DepartmentSP.resx">
-      <DependentUpon>201510221341559_DepartmentSP.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201510221519531_RowVersion.resx">
-      <DependentUpon>201510221519531_RowVersion.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201510221520292_RowVersion2.resx">
-      <DependentUpon>201510221520292_RowVersion2.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201510221624228_Inheritance.resx">
+      <DependentUpon>201510221624228_Inheritance.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
