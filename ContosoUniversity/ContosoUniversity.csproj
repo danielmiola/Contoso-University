@@ -126,6 +126,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\CourseController.cs" />
+    <Compile Include="Controllers\DepartmentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InstructorController.cs" />
     <Compile Include="Controllers\StudentController.cs" />
@@ -142,6 +143,10 @@
     <Compile Include="Migrations\201510221105162_ComplexDataModel].cs" />
     <Compile Include="Migrations\201510221105162_ComplexDataModel].Designer.cs">
       <DependentUpon>201510221105162_ComplexDataModel].cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201510221341559_DepartmentSP.cs" />
+    <Compile Include="Migrations\201510221341559_DepartmentSP.Designer.cs">
+      <DependentUpon>201510221341559_DepartmentSP.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Course.cs" />
@@ -203,6 +208,11 @@
     <Content Include="Views\Instructor\Details.cshtml" />
     <Content Include="Views\Instructor\Edit.cshtml" />
     <Content Include="Views\Instructor\Index.cshtml" />
+    <Content Include="Views\Department\Create.cshtml" />
+    <Content Include="Views\Department\Delete.cshtml" />
+    <Content Include="Views\Department\Details.cshtml" />
+    <Content Include="Views\Department\Edit.cshtml" />
+    <Content Include="Views\Department\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -214,6 +224,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201510221105162_ComplexDataModel].resx">
       <DependentUpon>201510221105162_ComplexDataModel].cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201510221341559_DepartmentSP.resx">
+      <DependentUpon>201510221341559_DepartmentSP.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
